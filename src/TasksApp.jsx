@@ -13,9 +13,36 @@ export default function TasksApp() {
     copy2.push(false)
     setCompletada(copy2)
   }
-  const deleteTask = (index) => {
+  const checkTask = (index) => {
     let copy = structuredClone(completada)
-    copy[index] = true
+    copy[index] = !copy[index]
+    setCompletada(copy)
+
+  }
+  const deleteTask = (index) => {
+    if(completada[index]){
+      let copy = structuredClone(tareas)
+      copy.splice(index,1)
+      setTareas(copy)
+      copy = structuredClone(completada)
+      copy[index] = !copy[index]
+      setCompletada(copy)
+    }
+  }
+  const deleteAll = () => {
+    for(let check of completada){
+      if(!check)
+        return
+    }
+    setTareas([])
+    setCompletada([])
+  }
+  const selectAll = () => {
+    let copy = structuredClone(completada)
+    completada.map((item,index) => {
+      if(!item)
+        copy[index] = !item
+    })
     setCompletada(copy)
   }
   return (
@@ -27,16 +54,19 @@ export default function TasksApp() {
           <input className="p-1" type="text" name="tarea" id="tarea" />
           <button>Añadir</button>
         </form>
-        <ul className="w-64 ml-8 space-y-2 list-disc">
+        {tareas.length != 0 &&
+          <ul className="w-64 ml-8 space-y-2 list-disc">
           {tareas.length != 0 ? tareas.map((tarea,index) => 
-            <li key={index} className={(completada[index] ? "line-through text-gray-500" : "")+" flex items-center justify-between"}>ಠ_ಠ - {tarea} <button className='p-0 mt-1 ml-2 text-right outline-none bg-inherit' 
+            <li key={index} className={(completada[index] ? "line-through text-gray-500" : "")+" flex items-center justify-between text-center"}><input type="checkbox" checked={completada[index]} 
+            onClick={() => checkTask(index)} onChange={() => {}} /> ಠ_ಠ - {tarea} <button className='p-0 mt-1 ml-2 text-right outline-none bg-inherit' 
             onClick={() => deleteTask(index)}>
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-6 h-6">
               <path strokeLinecap="round" strokeLinejoin="round" d="M10.125 2.25h-4.5c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125v-9M10.125 2.25h.375a9 9 0 019 9v.375M10.125 2.25A3.375 3.375 0 0113.5 5.625v1.5c0 .621.504 1.125 1.125 1.125h1.5a3.375 3.375 0 013.375 3.375M9 15l2.25 2.25L15 12" />
             </svg>
           </button></li>
           ) : <p></p>}
-        </ul>
+          <div className="flex space-x-2"><button className="p-1" onClick={selectAll}>Seleccionar Todo</button><button className="p-3" onClick={deleteAll}>Borrar Todo</button></div>
+        </ul>}
       </div>
     </>
   )
